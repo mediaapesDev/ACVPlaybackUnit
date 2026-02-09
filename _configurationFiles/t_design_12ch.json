@@ -1,0 +1,106 @@
+{
+  "Name": "t-design (12 positions)",
+  "Description": "t-design of degree 4 (12 positions), which can be used to decode Ambisonic signals, process them with non-Ambisonic effects, and encode them again.",
+  "LoudspeakerLayout": {
+    "Name": "t-design (12 positions)",
+    "Description": "t-design of degree 4 (12 positions), which can be used to decode Ambisonic signals, process them with non-Ambisonic effects, and encode them again.",
+    "Loudspeakers": [
+      {
+        "Azimuth": 0.0,
+        "Elevation": -31.71747441145571,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 1,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 301.71747441145567,
+        "Elevation": 0.0,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 2,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 270.0,
+        "Elevation": 58.2825255885443,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 3,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 0.0,
+        "Elevation": 31.717474411455697,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 4,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 238.28252558854427,
+        "Elevation": 0.0,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 5,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 90.0,
+        "Elevation": -58.2825255885443,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 6,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 180.0,
+        "Elevation": -31.71747441145571,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 7,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 121.71747441145571,
+        "Elevation": 0.0,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 8,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 90.0,
+        "Elevation": 58.2825255885443,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 9,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 180.0,
+        "Elevation": 31.717474411455697,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 10,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 58.2825255885443,
+        "Elevation": 0.0,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 11,
+        "Gain": 1.0
+      },
+      {
+        "Azimuth": 270.0,
+        "Elevation": -58.2825255885443,
+        "Radius": 0.9999999999998959,
+        "IsImaginary": false,
+        "Channel": 12,
+        "Gain": 1.0
+      }
+    ]
+  }
+}
