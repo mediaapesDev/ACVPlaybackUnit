@@ -26,3 +26,4 @@ JUCE/
 # macOS Stuff
 #############
 .DS_Store
+macOS_buildForRelease.sh
