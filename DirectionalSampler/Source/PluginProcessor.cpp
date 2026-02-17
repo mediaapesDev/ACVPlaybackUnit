@@ -352,8 +352,10 @@ void DirectionalSamplerAudioProcessor::prepareToPlay (double sampleRate, int sam
             {
                 auto* param = parameters.getParameter("pickSample");
                 if (param->getValue() <= 0.5f)
-                    //1.f = Test Sound
-                    param->setValueNotifyingHost(juce::jmap(1.f, 0.f, (float)sampleLib.size(), 0.f, 1.f));
+                {
+                    param->setValueNotifyingHost(juce::jmap(1.0f, 0.f, (float)sampleLib.size(), 0.f, 1.f));
+                }
+                    
                 mSamplerSoundsLoaded = true;
             }
 
@@ -936,10 +938,10 @@ void DirectionalSamplerAudioProcessor::parameterChanged (const juce::String& par
         playbackControl(false);
         mSamplerSoundsLoaded = false;
         const int sel (juce::roundToInt(newValue));
-
+        
         if (sel>0)
         {
-            juce::String fileName = sampleLib[sel-1].replace ("-", "") + "_wav";
+            juce::String fileName = sampleLib[sel - 1].replace ("-", "") + "_wav";
             if (! *guideActive)
                 if (sel != guideSampleID)
                 tempSampleID = sel;
@@ -1903,8 +1905,50 @@ void DirectionalSamplerAudioProcessor::loadSample(const juce::String& resourceNa
     
     DBG("Sample loaded successfully!");
     
+    manualSample = false;
+    
     //Resolve
     mSamplerSoundsLoaded = true;
+    suspendProcessing(false);
+}
+
+void DirectionalSamplerAudioProcessor::loadSampleManually()
+{
+    juce::File fileToLoad;
+
+    //in case you change your mind
+    juce::FileChooser chooser("Load sample");
+    if (chooser.browseForFileToOpen())
+    {
+            fileToLoad = chooser.getResult(); // override default if user picks a file
+    }
+
+    std::unique_ptr<juce::AudioFormatReader> reader(mFormatManager.createReaderFor(fileToLoad));
+    
+    if (!reader)
+    {
+        DBG("Could not create reader from binary data!");
+        return;
+    }
+
+    mSampler.clearSounds();
+
+    juce::AudioBuffer<float> buffi((int)reader->numChannels, (int)reader->lengthInSamples);
+    buffi.clear();
+    suspendProcessing(true);
+    
+    reader->read(&buffi, 0, (int)reader->lengthInSamples, 0, true, true);
+
+    mSampler.addSound(new LoopingSound(std::move(buffi), reader->sampleRate, 60));
+    
+    DBG("Sample loaded successfully!");
+    
+    auto* param = parameters.getParameter("pickSample");
+    param->setValueNotifyingHost(0.0f);
+
+    //Resolve
+    mSamplerSoundsLoaded = true;
+    manualSample = true;
     suspendProcessing(false);
 }
 

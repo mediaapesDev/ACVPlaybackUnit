@@ -81,14 +81,16 @@ public:
     juce::Result loadConfiguration (const juce::File& configFile);
     juce::Result loadConfigFromString (juce::String configString);
     void loadSample(const juce::String& resourceName);
+    void loadSampleManually();
     void setLastDir (juce::File newLastDir);
     juce::File getLastDir() { return lastDir; };
-    void loadDefaultFile();
+    
 
     bool yprInput;
     bool updateColours = false;
     bool updateSphere = true;
     bool soloMuteChanged = true;
+    bool manualSample = false;
     
     int samplerSize = 1;
     

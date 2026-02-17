@@ -348,9 +348,12 @@ DirectionalSamplerAudioProcessorEditor::DirectionalSamplerAudioProcessorEditor (
     cbEqAttachment.reset (new ComboBoxAttachment (valueTreeState, "applyHeadphoneEq", cbEq));
     
     addAndMakeVisible (cbSamples);
-    cbSamples.addItem ("No Sample Picked", 1);
-    cbSamples.addItemList (processor.sampleLib, 2);
+    cbSamples.addItem ("No Sample or Manual Pick", 1);
+    cbSamples.addItemList (processor.sampleLib, 3);
     cbSamplesAttachment.reset (new ComboBoxAttachment (valueTreeState, "pickSample", cbSamples));
+    
+    mLoadButton.onClick = [&]() {processor.loadSampleManually();};
+    addAndMakeVisible(mLoadButton);
 
     setResizeLimits (870, 750, 1740, 1500);
     setResizable (true, true);
@@ -414,6 +417,11 @@ void DirectionalSamplerAudioProcessorEditor::timerCallback()
         processor.updateSphere = false;
         sphere.repaint();
     }
+    
+    if (processor.manualSample)
+        mLoadButton.setButtonText("File Loaded");
+    else
+        mLoadButton.setButtonText("Manual File Loader");
 }
 
 void DirectionalSamplerAudioProcessorEditor::mouseWheelOnSpherePannerMoved (
@@ -440,6 +448,16 @@ void DirectionalSamplerAudioProcessorEditor::resized()
     area.removeFromLeft (leftRightMargin);
     area.removeFromRight (leftRightMargin);
     juce::Rectangle<int> headerArea = area.removeFromTop (headerHeight);
+    juce::Rectangle<int> enable = headerArea.removeFromRight (40);
+    juce::Rectangle<int> loader = headerArea.removeFromRight(100);
+    
+    enable.removeFromTop(10); enable.removeFromBottom(10); enable.removeFromLeft(10); enable.removeFromRight(10);
+    playButton.setBounds(enable);
+    
+    loader.removeFromLeft(20);
+    loader.removeFromBottom(10);loader.removeFromTop(10);
+    mLoadButton.setBounds(loader);
+    
     title.setBounds (headerArea);
     area.removeFromTop (10);
     area.removeFromBottom (5);
@@ -596,10 +614,7 @@ void DirectionalSamplerAudioProcessorEditor::resized()
     
     //togglesArea.removeFromTop(5);
     togglesArea.removeFromBottom(10);
-    playButton.setBounds(togglesArea.removeFromRight(25));
-
-    togglesArea.removeFromLeft(labelSpacer);
-    guideActiveButton.setBounds(togglesArea.removeFromRight(70));
+    guideActiveButton.setBounds(togglesArea.removeFromRight(50));
     
     // ------------- RMS ------------------------
     controls.removeFromLeft (5);

@@ -94,6 +94,7 @@ private:
         slDynamicRange;
     
     juce::TextButton tbImport;
+    juce::TextButton mLoadButton {"Load"};
     
     juce::ToggleButton tbLockedToMaster,
         playButton,

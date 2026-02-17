@@ -62,8 +62,8 @@ class IOWidget : public juce::Component
 public:
     IOWidget() : juce::Component()
     {
-        addChildComponent (alert);
-        alert.setBounds (15, 15, 15, 15);
+        //addChildComponent (alert);
+        //alert.setBounds (15, 15, 15, 15);
     }
 
     virtual const int getComponentSize() = 0;
@@ -72,13 +72,13 @@ public:
     void setBusTooSmall (bool isBusTooSmall)
     {
         busTooSmall = isBusTooSmall;
-        alert.setVisible (isBusTooSmall);
+        //alert.setVisible (isBusTooSmall);
     }
 
     bool isBusTooSmall() { return busTooSmall; }
 
 private:
-    AlertSymbol alert;
+    //AlertSymbol alert;
     bool busTooSmall = false;
 };
 
@@ -141,6 +141,7 @@ public:
 
     void updateDisplayTextIfNotSelectable()
     {
+        /*
         if (availableChannels < channelSizeIfNotSelectable)
         {
             displayTextIfNotSelectable =
@@ -152,6 +153,9 @@ public:
             displayTextIfNotSelectable = juce::String (channelSizeIfNotSelectable);
             setBusTooSmall (false);
         }
+         */
+        displayTextIfNotSelectable = juce::String (channelSizeIfNotSelectable);
+        setBusTooSmall (false);
         repaint();
     }
 
@@ -192,7 +196,7 @@ public:
                 }
                 for (i = maxPossibleNumberOfChannels + 1; i <= maxChannels; ++i)
                 {
-                    cbChannels->changeItemText (i + 1, juce::String (i) + " (bus too small)");
+                    cbChannels->changeItemText (i + 1, juce::String (i));
                 }
                 checkIfBusIsTooSmall();
 
@@ -295,6 +299,7 @@ public:
 
     void updateDisplayTextIfNotSelectable()
     {
+        /*
         if (maxPossibleOrder < orderIfNotSelectable)
         {
             displayTextIfNotSelectable = getOrderString (orderIfNotSelectable) + " (bus too small)";
@@ -304,7 +309,9 @@ public:
         {
             displayTextIfNotSelectable = getOrderString (orderIfNotSelectable) + " order";
             setBusTooSmall (false);
-        }
+        }*/
+        displayTextIfNotSelectable = getOrderString (orderIfNotSelectable) + " order";
+        setBusTooSmall (false);
         repaint();
     }
 
@@ -354,7 +361,7 @@ public:
                     cbOrder.changeItemText (i + 2, getOrderString (i));
 
                 for (int i = maxPossibleOrder + 1; i <= maxOrder; ++i)
-                    cbOrder.changeItemText (i + 2, getOrderString (i) + " (bus too small)");
+                    cbOrder.changeItemText (i + 2, getOrderString (i));
 
                 DBG (cbOrder.getItemText (cbOrder.indexOfItemId ((currId))));
                 cbOrder.setText (cbOrder.getItemText (cbOrder.indexOfItemId ((currId))));
@@ -468,7 +475,7 @@ public:
         }
         for (i = maxPossibleOrder + 1; i <= 7; ++i)
         {
-            cbOrder.changeItemText (i + 2, orderStrings[i] + " (bus too small)");
+            cbOrder.changeItemText (i + 2, orderStrings[i]);
         }
         cbOrder.setText (cbOrder.getItemText (cbOrder.indexOfItemId (currId)));
         if (currId - 2 > maxPossibleOrder)
