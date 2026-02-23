@@ -59,8 +59,19 @@ const juce::StringArray DirectionalSamplerAudioProcessor::headphoneEQs =
 
 const juce::StringArray DirectionalSamplerAudioProcessor::sampleLib =
     juce::StringArray ("ACV_TestSound",
-                       "ACV_Guide_01"
-                       );
+                       "ACV_Guide_01",
+                       "L_ACV_Noise_01",
+                       "L_ACV_Noise_02",
+                       "L_ACV_Noise_03",
+                       "L_ACV_Tonal_01",
+                       "L_ACV_Tonal_02",
+                       "L_ACV_Tonal_03",
+                       "L_ACV_Tonal_04",
+                       "L_ACV_Tonal_05",
+                       "O_ACV_Pluck_01",
+                       "O_ACV_Pluck_02",
+                       "O_ACV_Pluck_03",
+                       "O_ACV_Pluck_04");
 
 //==============================================================================
 DirectionalSamplerAudioProcessor::DirectionalSamplerAudioProcessor() :
@@ -757,6 +768,9 @@ void DirectionalSamplerAudioProcessor::parameterChanged (const juce::String& par
     else if (parameterID.startsWith("pitch") || parameterID == "pitchRange" ||
              parameterID == "pitchActive")
     {
+        if (*seamless >= 0.5f)
+            return;
+        
         const int nChIn = mSampler.getNumVoices();
         if (*pitchActive)
         {
@@ -945,6 +959,19 @@ void DirectionalSamplerAudioProcessor::parameterChanged (const juce::String& par
             if (! *guideActive)
                 if (sel != guideSampleID)
                 tempSampleID = sel;
+            if (fileName.startsWith("L_"))
+            {
+                auto* param = parameters.getParameter("seamless");
+                param->setValueNotifyingHost(1.0f);
+            }
+            else
+            {
+                if (*seamless >= 0.5f)
+                {
+                    auto* param = parameters.getParameter("seamless");
+                    param->setValueNotifyingHost(0.0f);
+                }
+            }
             loadSample(fileName);
         }
         
@@ -1347,7 +1374,8 @@ void DirectionalSamplerAudioProcessor::gainUpdate()
 void DirectionalSamplerAudioProcessor::cycleUpdate()
 {
     //adjust the sampler's looplength on change or in setup scenarios
-    if (mSampler.getNumVoices() == 0 || mSampler.getNumSounds() == 0)
+    if (mSampler.getNumVoices() == 0 || mSampler.getNumSounds() == 0 ||
+        *seamless >= 0.5f)
         return;
     
     const int nCh = mSampler.getNumVoices();

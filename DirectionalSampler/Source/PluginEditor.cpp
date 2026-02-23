@@ -439,14 +439,14 @@ void DirectionalSamplerAudioProcessorEditor::mouseWheelOnSpherePannerMoved (
 
 void DirectionalSamplerAudioProcessorEditor::resized()
 {
-    const int leftRightMargin = 30;
+    const int margin = 30;
     const int headerHeight = 60;
-    const int footerHeight = 30;
+
     juce::Rectangle<int> area (getLocalBounds());
-    juce::Rectangle<int> footerArea (area.removeFromBottom (footerHeight));
+    juce::Rectangle<int> footerArea (area.removeFromBottom (margin));
     
-    area.removeFromLeft (leftRightMargin);
-    area.removeFromRight (leftRightMargin);
+    area.removeFromLeft (margin);
+    area.removeFromRight (margin);
     juce::Rectangle<int> headerArea = area.removeFromTop (headerHeight);
     juce::Rectangle<int> enable = headerArea.removeFromRight (40);
     juce::Rectangle<int> loader = headerArea.removeFromRight(100);
@@ -496,12 +496,12 @@ void DirectionalSamplerAudioProcessorEditor::resized()
 
     juce::Rectangle<int> hpArea (footerArea.removeFromLeft(footerArea.getWidth()/3));
     juce::Rectangle<int> sampleArea (footerArea.removeFromLeft(hpArea.getWidth()));
-    hpArea.removeFromLeft(leftRightMargin);
-    hpArea.removeFromRight(leftRightMargin/2);
+    hpArea.removeFromLeft(margin);
+    hpArea.removeFromRight(margin/2);
     hpArea.removeFromBottom(5);
     hpArea.removeFromTop(5);
-    sampleArea.removeFromLeft(leftRightMargin/2);
-    sampleArea.removeFromRight(leftRightMargin);
+    sampleArea.removeFromLeft(margin/2);
+    sampleArea.removeFromRight(margin);
     sampleArea.removeFromBottom(5);
     sampleArea.removeFromTop(5);
     footer.setBounds (footerArea);

@@ -73,7 +73,19 @@ juce_add_binary_data (DirectionalSamplerSamples
     NAMESPACE SampleData
     SOURCES
         Source/Samples/ACV_TestSound.wav
-	Source/Samples/ACV_Guide_01.wav)
+	Source/Samples/ACV_Guide_01.wav
+	Source/Samples/L_ACV_Noise_01.wav
+	Source/Samples/L_ACV_Noise_02.wav
+	Source/Samples/L_ACV_Noise_03.wav
+	Source/Samples/L_ACV_Tonal_01.wav
+	Source/Samples/L_ACV_Tonal_02.wav
+	Source/Samples/L_ACV_Tonal_03.wav
+	Source/Samples/L_ACV_Tonal_04.wav
+	Source/Samples/L_ACV_Tonal_05.wav
+	Source/Samples/O_ACV_Pluck_01.wav
+	Source/Samples/O_ACV_Pluck_02.wav
+	Source/Samples/O_ACV_Pluck_03.wav
+	Source/Samples/O_ACV_Pluck_04.wav)
 
 
 foreach (TARGET IN LISTS PLUGIN_TARGET)

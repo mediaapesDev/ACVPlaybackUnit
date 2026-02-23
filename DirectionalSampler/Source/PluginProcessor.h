@@ -344,90 +344,174 @@ public:
                          int numSamples) override
     {
         if (!buffer)
-        {
             return;
-        }
 
         const int numChannels = buffer->getNumChannels();
-        double releaseSamples = adsr.getParameters().release * sampleRate;
-        releaseSamples = juce::jmin(releaseSamples, loopLengthSamples * 0.99);
-        double loopEnd = loopLengthSamples;
-        double releaseStart = loopEnd - releaseSamples;
-        while (--numSamples >= 0)
+        
+        if (fixedLength)
         {
-            // Advance loop phase
-            loopCounter += 1.0;
-
-            // Compute release start (in samples)
-            const double releaseStart = loopLengthSamples - releaseSamples;
-
-            // Trigger release once per loop
-            if (!releaseTriggered && loopCounter >= releaseStart)
+            double releaseSamples = adsr.getParameters().release * sampleRate;
+            releaseSamples = juce::jmin(releaseSamples, loopLengthSamples * 0.99);
+            double loopEnd = loopLengthSamples;
+            double releaseStart = loopEnd - releaseSamples;
+            while (--numSamples >= 0)
             {
-                adsr.noteOff();
-                releaseTriggered = true;
-            }
-
-            // Handle loop wrap
-            if (loopCounter >= loopLengthSamples && loopLengthSamples > 1.0)
-            {
-                if (!finalCycle)
+                // Advance loop phase
+                loopCounter += 1.0;
+                
+                // Compute release start (in samples)
+                const double releaseStart = loopLengthSamples - releaseSamples;
+                
+                // Trigger release once per loop
+                if (!releaseTriggered && loopCounter >= releaseStart)
                 {
-                    loopCounter -= loopLengthSamples;
-                    sourcePos = 0.0;
+                    adsr.noteOff();
+                    releaseTriggered = true;
+                }
+                
+                // Handle loop wrap
+                if (loopCounter >= loopLengthSamples && loopLengthSamples > 1.0)
+                {
+                    if (!finalCycle)
+                    {
+                        loopCounter -= loopLengthSamples;
+                        sourcePos = 0.0;
+                        
+                        adsr.reset();
+                        adsr.noteOn();
+                        releaseTriggered = false;
+                    }
+                    else
+                    {
+                        buffer = nullptr;
+                        return;
+                    }
+                }
+                
+                // Advance envelope
+                const float env = adsr.getNextSample();
+                float sampleValue = 0.0f;
+                
+                // Read sample (linear interpolation)
+                if (sourcePos < buffer->getNumSamples())
+                {
+                    const int pos = (int) sourcePos;
+                    const int nextPos = juce::jmin (pos + 1,
+                                                    buffer->getNumSamples() - 1);
+                    const float frac = (float) (sourcePos - pos);
                     
-                    adsr.reset();
-                    adsr.noteOn();
-                    releaseTriggered = false;
+                    for (int ch = 0; ch < numChannels; ++ch)
+                    {
+                        const float s1 = buffer->getSample (ch, pos);
+                        const float s2 = buffer->getSample (ch, nextPos);
+                        sampleValue += s1 * (1.0f - frac) + s2 * frac;
+                    }
+                    
+                    sourcePos += smoothedPitchRatio.getNextValue();;
                 }
-                else
-                {
-                    buffer = nullptr;
-                    return;
-                }
-            }
-
-            // Advance envelope
-            const float env = adsr.getNextSample();
-            float sampleValue = 0.0f;
-
-            // Read sample (linear interpolation)
-            if (sourcePos < buffer->getNumSamples())
-            {
-                const int pos = (int) sourcePos;
-                const int nextPos = juce::jmin (pos + 1,
-                                                buffer->getNumSamples() - 1);
-                const float frac = (float) (sourcePos - pos);
-
-                for (int ch = 0; ch < numChannels; ++ch)
-                {
-                    const float s1 = buffer->getSample (ch, pos);
-                    const float s2 = buffer->getSample (ch, nextPos);
-                    sampleValue += s1 * (1.0f - frac) + s2 * frac;
-                }
-
-                sourcePos += smoothedPitchRatio.getNextValue();;
+                
+                // Apply envelope + velocity
+                sampleValue *= level * env;
+                
+                float currentCutoff = smoothedCutoff.getNextValue();
+                lowpass.coefficients = juce::dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, currentCutoff);
+                sampleValue = lowpass.processSample(sampleValue);
+                
+                //make sure shit doesn't blow up
+                jassert (std::isfinite(sampleValue));
+                
+                // Write to output
+                output.addSample (outputCh, startSample, sampleValue);
+                
+                ++startSample;
             }
             
-            // Apply envelope + velocity
-            sampleValue *= level * env;
-
-            float currentCutoff = smoothedCutoff.getNextValue();
-            lowpass.coefficients = juce::dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, currentCutoff);
-            sampleValue = lowpass.processSample(sampleValue);
             
-            //make sure shit doesn't blow up
-            jassert (std::isfinite(sampleValue));
-
-            // Write to output
-            output.addSample (outputCh, startSample, sampleValue);
-            
-            ++startSample;
+            if (!adsr.isActive())
+                clearCurrentNote();
         }
-
-
-        if (!adsr.isActive())
-            clearCurrentNote();
+        else
+        {
+            double releaseSamples = adsr.getParameters().release * sampleRate;
+            releaseSamples = juce::jmin(releaseSamples, loopLengthSamples * 0.99);
+            double loopEnd = loopLengthSamples;
+            double releaseStart = loopEnd - releaseSamples;
+            while (--numSamples >= 0)
+            {
+                // Advance loop phase
+                loopCounter += 1.0;
+                
+                // Compute release start (in samples)
+                const double releaseStart = loopLengthSamples - releaseSamples;
+                
+                // Trigger release once per loop
+                if (!releaseTriggered && loopCounter >= releaseStart)
+                {
+                    adsr.noteOff();
+                    releaseTriggered = true;
+                }
+                
+                // Handle loop wrap
+                if (loopCounter >= loopLengthSamples && loopLengthSamples > 1.0)
+                {
+                    if (!finalCycle)
+                    {
+                        loopCounter -= loopLengthSamples;
+                        sourcePos = 0.0;
+                        
+                        adsr.reset();
+                        adsr.noteOn();
+                        releaseTriggered = false;
+                    }
+                    else
+                    {
+                        buffer = nullptr;
+                        return;
+                    }
+                }
+                
+                // Advance envelope
+                const float env = adsr.getNextSample();
+                float sampleValue = 0.0f;
+                
+                // Read sample (linear interpolation)
+                if (sourcePos < buffer->getNumSamples())
+                {
+                    const int pos = (int) sourcePos;
+                    const int nextPos = juce::jmin (pos + 1,
+                                                    buffer->getNumSamples() - 1);
+                    const float frac = (float) (sourcePos - pos);
+                    
+                    for (int ch = 0; ch < numChannels; ++ch)
+                    {
+                        const float s1 = buffer->getSample (ch, pos);
+                        const float s2 = buffer->getSample (ch, nextPos);
+                        sampleValue += s1 * (1.0f - frac) + s2 * frac;
+                    }
+                    
+                    sourcePos += smoothedPitchRatio.getNextValue();;
+                }
+                
+                // Apply envelope + velocity
+                sampleValue *= level * env;
+                
+                float currentCutoff = smoothedCutoff.getNextValue();
+                lowpass.coefficients = juce::dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, currentCutoff);
+                sampleValue = lowpass.processSample(sampleValue);
+                
+                //make sure shit doesn't blow up
+                jassert (std::isfinite(sampleValue));
+                
+                // Write to output
+                output.addSample (outputCh, startSample, sampleValue);
+                
+                ++startSample;
+            }
+            
+            
+            if (!adsr.isActive())
+                clearCurrentNote();
+        }
     }
     
     // Set loop length in milliseconds
@@ -534,4 +618,6 @@ private:
         loopLengthSamples,
         sourcePos,
         currentPitchRatio;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoopingSamplerVoice)
 };
