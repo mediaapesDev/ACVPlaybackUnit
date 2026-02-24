@@ -71,7 +71,15 @@ const juce::StringArray DirectionalSamplerAudioProcessor::sampleLib =
                        "O_ACV_Pluck_01",
                        "O_ACV_Pluck_02",
                        "O_ACV_Pluck_03",
-                       "O_ACV_Pluck_04");
+                       "O_ACV_Pluck_04",
+                       "L_Links_12",
+                       "L_Links_38",
+                       "L_Links_64",
+                       "L_Links_90",
+                       "L_Rechts_12",
+                       "L_Rechts_38",
+                       "L_Rechts_64",
+                       "L_Rechts_90");
 
 //==============================================================================
 DirectionalSamplerAudioProcessor::DirectionalSamplerAudioProcessor() :

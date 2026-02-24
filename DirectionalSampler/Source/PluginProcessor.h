@@ -350,24 +350,27 @@ public:
         
         if (fixedLength)
         {
-            double releaseSamples = adsr.getParameters().release * sampleRate;
-            releaseSamples = juce::jmin(releaseSamples, loopLengthSamples * 0.99);
-            double loopEnd = loopLengthSamples;
-            double releaseStart = loopEnd - releaseSamples;
+            //determine adsr timings
+            //double releaseSamples = adsr.getParameters().release * sampleRate;
+            //releaseSamples = juce::jmin(releaseSamples, loopLengthSamples * 0.99);
+            //double loopEnd = loopLengthSamples;
+            //double releaseStart = loopEnd - releaseSamples;
+            
+            //cycle
             while (--numSamples >= 0)
             {
                 // Advance loop phase
                 loopCounter += 1.0;
                 
                 // Compute release start (in samples)
-                const double releaseStart = loopLengthSamples - releaseSamples;
+                //const double releaseStart = loopLengthSamples - releaseSamples;
                 
                 // Trigger release once per loop
-                if (!releaseTriggered && loopCounter >= releaseStart)
-                {
-                    adsr.noteOff();
-                    releaseTriggered = true;
-                }
+                //if (!releaseTriggered && loopCounter >= releaseStart)
+                //{
+                //    adsr.noteOff();
+                //    releaseTriggered = true;
+                //}
                 
                 // Handle loop wrap
                 if (loopCounter >= loopLengthSamples && loopLengthSamples > 1.0)
@@ -425,7 +428,6 @@ public:
                 
                 ++startSample;
             }
-            
             
             if (!adsr.isActive())
                 clearCurrentNote();

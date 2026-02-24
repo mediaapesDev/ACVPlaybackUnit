@@ -85,7 +85,15 @@ juce_add_binary_data (DirectionalSamplerSamples
 	Source/Samples/O_ACV_Pluck_01.wav
 	Source/Samples/O_ACV_Pluck_02.wav
 	Source/Samples/O_ACV_Pluck_03.wav
-	Source/Samples/O_ACV_Pluck_04.wav)
+	Source/Samples/O_ACV_Pluck_04.wav
+	Source/Samples/L_Links_12.wav
+	Source/Samples/L_Links_38.wav
+	Source/Samples/L_Links_64.wav
+	Source/Samples/L_Links_90.wav
+	Source/Samples/L_Rechts_12.wav
+	Source/Samples/L_Rechts_38.wav
+	Source/Samples/L_Rechts_64.wav
+	Source/Samples/L_Rechts_90.wav)
 
 
 foreach (TARGET IN LISTS PLUGIN_TARGET)
