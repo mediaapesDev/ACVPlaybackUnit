@@ -31,6 +31,7 @@
 #include "../../resources/efficientSHvanilla.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Defaults.h"
+#include "Modes.h"
 
 #define CONFIGURATIONHELPER_ENABLE_LOUDSPEAKERLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
@@ -167,6 +168,7 @@ public:
     //CB Selectors
     static const juce::StringArray headphoneEQs;
     static const juce::StringArray sampleLib;
+    static const juce::StringArray modeLib;
     
 private:
     //==============================================================================
@@ -214,6 +216,7 @@ private:
     //CB Selector
     std::atomic<float>* applyHeadphoneEq;
     std::atomic<float>* pickSample;
+    std::atomic<float>* pickMode;
 
     juce::dsp::Convolution EQ;
 

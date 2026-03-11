@@ -1,15 +1,15 @@
 //This is where all the default values are stored.
-//Changing these values requires re-building the package!
 
 #pragma once
 
 namespace Defaults
 {
 //Values Channel Layout
-constexpr int dfMaxCh = 64;
+constexpr int dfMaxCh = 24;
 constexpr float dfOrderSetting = 4;
 constexpr float dfLoopMin = 80.0f;
 constexpr int dfVoices = 8;
+constexpr float dfMode = 8.0f;
 
 //Values Parameters
 constexpr float dfMasterGain = -3.0f;

@@ -111,7 +111,8 @@ private:
 
     juce::ComboBox inputChooser,
         cbEq,
-        cbSamples;
+        cbSamples,
+        cbModes;
 
     std::unique_ptr<SliderAttachment> slMasterAzimuthAttachment,
         slMasterElevationAttachment,
@@ -147,7 +148,8 @@ private:
         cbNormalizationAtachment,
         cbOrderAtachment,
         cbEqAttachment,
-        cbSamplesAttachment;
+        cbSamplesAttachment,
+        cbModesAttachment;
     
     std::unique_ptr<CostumEncoderList> encoderList;
 

@@ -31,6 +31,7 @@
 #include <SamplingData.h>
 
 using namespace Defaults;
+using namespace Modes;
 
 const juce::StringArray DirectionalSamplerAudioProcessor::headphoneEQs =
     juce::StringArray ("AKG-K141MK2",
@@ -80,6 +81,25 @@ const juce::StringArray DirectionalSamplerAudioProcessor::sampleLib =
                        "L_Rechts_38",
                        "L_Rechts_64",
                        "L_Rechts_90");
+
+const juce::StringArray DirectionalSamplerAudioProcessor::modeLib =
+    juce::StringArray ("Aku Vol",
+                       "Aku Lpf",
+                       "Aku Vol_Lpf",
+                       "Loop Vol",
+                       "Loop Pit",
+                       "Loop Lpf",
+                       "Loop Vol_Pit",
+                       "Loop Vol_Lpf",
+                       "Loop Pit_Lpf",
+                       "Loop Vol_Pit_Lpf",
+                       "Pluck Vol",
+                       "Pluck Pit",
+                       "Pluck Lpf",
+                       "Pluck Vol_Pit",
+                       "Pluck Vol_Lpf",
+                       "Pluck Pit_Lpf",
+                       "Pluck Vol_Pit_Lpf");
 
 //==============================================================================
 DirectionalSamplerAudioProcessor::DirectionalSamplerAudioProcessor() :
@@ -991,6 +1011,22 @@ void DirectionalSamplerAudioProcessor::parameterChanged (const juce::String& par
         else
             playbackControl(true);
     }
+    else if (parameterID == "pickMode")
+    {
+        const int sel (juce::roundToInt(newValue));
+        if (sel > 0)
+        {
+            int p = (sel-1)*4;
+            const float vState = mod[p];
+            const float pState = mod[p+1];
+            const float lState = mod[p+2];
+            
+            //stop playback
+            //Setz sampe
+            //set states
+            //restart
+        }
+    }
     
 }
 
@@ -1813,6 +1849,21 @@ std::vector<std::unique_ptr<juce::RangedAudioParameter>>
                 return juce::String ("None");
             else
                 return juce::String (this->sampleLib[juce::roundToInt (value) - 1]);
+        },
+        nullptr));
+        
+    params.push_back (OSCParameterInterface::createParameterTheOldWay (
+        "pickMode",
+        "Mode Picker",
+        "",
+        juce::NormalisableRange<float> (0.0f, float (modeLib.size()), 1.0f),
+        0.0f,
+        [this] (float value)
+        {
+            if (value < 0.5f)
+                return juce::String ("None");
+            else
+                return juce::String (this->modeLib[juce::roundToInt (value) - 1]);
         },
         nullptr));
         

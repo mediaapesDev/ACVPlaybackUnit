@@ -352,6 +352,11 @@ DirectionalSamplerAudioProcessorEditor::DirectionalSamplerAudioProcessorEditor (
     cbSamples.addItemList (processor.sampleLib, 3);
     cbSamplesAttachment.reset (new ComboBoxAttachment (valueTreeState, "pickSample", cbSamples));
     
+    addAndMakeVisible (cbModes);
+    cbModes.addItem ("No Mode Selected", 1);
+    cbModes.addItemList (processor.modeLib, 2);
+    cbModesAttachment.reset (new ComboBoxAttachment (valueTreeState, "pickMode", cbModes));
+    
     mLoadButton.onClick = [&]() {processor.loadSampleManually();};
     addAndMakeVisible(mLoadButton);
 
@@ -450,6 +455,7 @@ void DirectionalSamplerAudioProcessorEditor::resized()
     juce::Rectangle<int> headerArea = area.removeFromTop (headerHeight);
     juce::Rectangle<int> enable = headerArea.removeFromRight (40);
     juce::Rectangle<int> loader = headerArea.removeFromRight(100);
+    juce::Rectangle<int> modeSelect = headerArea.removeFromRight(260);
     
     enable.removeFromTop(10); enable.removeFromBottom(10); enable.removeFromLeft(10); enable.removeFromRight(10);
     playButton.setBounds(enable);
@@ -457,6 +463,11 @@ void DirectionalSamplerAudioProcessorEditor::resized()
     loader.removeFromLeft(20);
     loader.removeFromBottom(10);loader.removeFromTop(10);
     mLoadButton.setBounds(loader);
+    
+    modeSelect.removeFromTop(20);
+    modeSelect.removeFromBottom(20);
+    modeSelect.removeFromLeft(margin);
+    cbModes.setBounds(modeSelect);
     
     title.setBounds (headerArea);
     area.removeFromTop (10);
